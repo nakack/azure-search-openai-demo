@@ -1097,6 +1097,41 @@ PowerAppsでは各コンポーネントのレイアウトやデザイン、サ�
 [Power Appsとは](https://learn.microsoft.com/ja-jp/power-apps/powerapps-overview)
 
 
+# **付録C: Logic App を使って Form Recognizer で PDF をテキスト化する** 
+Azure OpenAI と Cognitive Search を連携する場合、ドキュメントのテキスト化が必要な場合があります。Python 、REST API等で Form Recognizer と連携することで PDF や PNG 等のドキュメントをテキスト化することができます。
+また、Logic App を使うことでノーコードで実施することもできますので、手順を以下に記載します。
+
+事前準備：
+- Azure Form Recognizer リソースがデプロイ済みであること
+- Azure BLOB ストレージがデプロイ済みで、データ取得、データ配置用のコンテナが一つずつあること
+- 各リソースのファイアウォールはパブリックで公開されていること
+
+手順：
+1. Logic App リソースを従量課金プランで作成します。
+2. ロジックアプリデザイナーで以下のようなワークフローを作っていきます。
+3. 作成が終わったら、ストレージにテキスト化したい PDF ファイルを配置し、トリガーを実行します。
+
+![](images/logicapp1.png)
+
+ワークフロー内では以下を実施しています。
+1. スケジュールトリガー (手動で起動するために使っていますが、他のトリガーも可)
+2. ストレージのコンテナ内を List
+4. 各ファイルを取得
+5. Form Recognizer でファイルをテキスト化 (簡易手順ですのでファイル名は xxx.pdf.txt となってます)
+6. テキスト化されたコンテンツをファイルとして、ストレージに配置
+
+Azure BLOB ストレージへの認証は以下を選択可能です。
+
+![](images/logicapp2.png)
+
+テキスト化が成功すると、以下のような形で、PDF 形式のファイルがテキストに変換されます。
+
+![](images/logicapp3.png)
+
+こちらのテキストをベースに Cognitive Search の Index を作成することで該当のドキュメントの内容を連携できるようになります。
+
+![](images/logicapp4.png)
+
 # 🗑Azureリソースの削除
 本ワークショップで使用したAzureリソースは **「openai-workshop」** にあります。演習が終わった方は忘れずにリソースグループを削除してください。
 
